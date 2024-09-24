@@ -26,24 +26,7 @@ class UserController extends Controller
     return view('dataUser', compact('d', 'search', 'notFound'));
 }
 
-    // private function redirectUser($user)
-    // {
-    //     switch ($user->role) {
-    //         case 'Admin':
-    //             return redirect()->route('homeAdmin')->with('notifikasi', 'Selamat Datang, ' . $user->name);
-    //         case 'Pengguna':
-    //             return redirect()->route('homePengguna')->with('notifikasi', 'Selamat Datang, ' . $user->name);
-    //         case 'Owner':
-    //             return redirect()->route('homeOwner')->with('notifikasi', 'Selamat Datang, ' . $user->name);
-    //         case 'Mekanik':
-    //             return redirect()->route('homeMekanik', ['id' => $user->id])->with('notifikasi', 'Selamat Datang, ' . $user->name);
-    //         case 'Kasir':
-    //             return redirect()->route('homeKasir', ['id' => $user->id])->with('notifikasi', 'Selamat Datang, ' . $user->name);
-    //         default:
-    //             return redirect()->route('login')->with('notifikasi', 'Peran tidak dikenali.');
-    //     }
-    // }
-
+    
     public function homePengguna(){
         return view('homePengguna');
     }
@@ -150,6 +133,17 @@ public function update(Request $request, $id)
     }
 
     return redirect()->route('dataUser')->with('error', 'Pengguna tidak ditemukan!');
+}
+
+public function homeAdmin()
+    {
+    return view('Admin.homeAdmin');
+    }
+
+
+public function home()
+{
+    return view ('home');
 }
 
 }

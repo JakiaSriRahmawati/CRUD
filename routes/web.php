@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('postlogin', [AuthController::class, 'postlogin'])->name('postlogin');
 Route::get('register', [AuthController::class, 'register'])->name('register');
@@ -25,17 +24,26 @@ Route::post('postregister', [AuthController::class, 'postregister'])->name('post
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 
-Route::get('/', [UserController::class, 'homePengguna'])->name('homePengguna');
-Route::get('/dataUser', [UserController::class, 'dataUser'])->name('dataUser');
+Route::get('/', [UserController::class, 'home'])->name('home');
 
+
+Route::middleware(['auth', 'pengguna'])->group(function () {
+Route::get('/homePengguna', [UserController::class, 'homePengguna'])->name('homePengguna');
+});
+Route::get('/dataUser', [UserController::class, 'dataUser'])->name('dataUser');
 Route::get('/dataUser', [UserController::class, 'index'])->name('dataUser');
+
+
+Route::middleware(['auth', 'admin'])->group(function () {
+Route::get('/homeAdmin', [UserController::class, 'homeAdmin'])->name('homeAdmin');
+});
+
 
 
 Route::get('/index', [UserController::class, 'index'])->name('index');
 
 Route::get('/tambahdata', [UserController::class, 'tambahdata'])->name('tambahdata');
 Route::post('/postTambahUser', [UserController::class, 'postTambahUser'])->name('postTambahUser');
-
 
 Route::get('/deleted-users', [UserController::class, 'showDeletedUsers'])->name('deletedUsers');
 Route::put('/restore-user/{id}', [UserController::class, 'restoreUser'])->name('restoreUser');

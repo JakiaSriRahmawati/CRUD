@@ -5,31 +5,33 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class AuthController extends Controller
 {
-    public function login() {
-        $user = Auth::user();
-        return view('login', compact('user'));
+    public function login()
+    {
+    return view('login'); 
     }
+
     public function postLogin(Request $request)
     {
-        $request->validate([
-            "email" => "required|email",
-            "password" => "required",
-        ]);
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-        ];
-            if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            return redirect()->route('dataUser');
-        }
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->withInput($request->only('email'));
+    $request->validate([
+        "email" => "required|email",
+        "password" => "required",
+    ]);
+    $credentials = $request->only('email', 'password');
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+        return $this->redirectUser(auth()->user());
     }
+    return back()->withErrors([
+        'email' => 'Email atau password salah.',
+    ])->withInput($request->only('email'));
+    }
+
 
 
     public function register() {
@@ -57,6 +59,24 @@ class AuthController extends Controller
 
     public function logout() {
         auth()->logout();
-        return redirect()->route('homePengguna');
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/');
     }
+
+
+    private function redirectUser($user)
+    {
+        switch ($user->role) {
+            case 'admin':
+                return redirect()->route('homeAdmin')->with('notifikasi', 'Selamat Datang, ' . $user->name);
+            case 'pengguna':
+                return redirect()->route('homePengguna')->with('notifikasi', 'Selamat Datang, ' . $user->name);
+            }
+    }
+
+
+
+
 }
+    
